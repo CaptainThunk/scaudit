@@ -25,21 +25,15 @@ function dump_shit($shit) {
 function getTypeNamebyID($typeid) {
     global $db;
 
-    $sql = "select typeName from invTypes where typeID = :typeid";
-    $query = $db->prepare($sql);
-    $query = $db->bindValue(':typeid', $typeid);
-    
-    return($statement->execute());
+    $sql = "select typeName from invTypes where typeID = $typeid";
+    return($db->querySingle($sql));
 }
 
 function getTypeIDbyName($typename) {
     global $db;
 
-    $sql = "select typeID from invTypes where typeName = :typename";
-    $query = $db->prepare($sql);
-    $query = $db->bindValue(':typename', $typename);
-    
-    return($statement->execute());
+    $sql = "select typeID from invTypes where typeName = $typename";
+    return($db->querySingle($sql));
 }
 
 function getGroupNamebyGroupID($groupid) {
@@ -51,14 +45,14 @@ function getMetaLevelbyGroupID($groupid) {
 
     $sql = "select typeID, typeName, (select coalesce(valueInt,valueFloat) value from dgmTypeAttributes where attributeID=633 and invTypes.typeID = typeID) as MetaLevel from invTypes where groupID = :groupid order by MetaLevel";
     $query = $db->prepare($sql);
-    $query = $db->bindValue(':groupid', $groupid);
+    $query->bindValue(':groupid', $groupid);
+    $result = $query->execute();
     
-    return($statement->execute());
 }
 
 function traverseSuper($ship) {
     
-    dump_shit($ship);
+    //dump_shit($ship);
     
     foreach ($ship->contents as $key => $value) {
                     
@@ -71,16 +65,16 @@ function traverseSuper($ship) {
 
 function traverseAssets($iterator) {
     $super_caps = [ 
-    	"Revenant"  => 3514,
-    	"Nation"    => 3628,
-    	"Hel"       => 22852,
-        "Nyx"       => 23913,
-        "Wyvern"    => 23917,
-    	"Aeon"      => 23919,
-    	"Erebus"    => 671,
-    	"Leviathan" => 3764,
-    	"Avatar"    => 11567,
-    	"Ragnarok"  => 23773
+    	3514,    // Revenant
+    	3628,    // Nation
+    	22852,   // Hel
+        23913,   // Nyx
+        23917,   // Wyvern
+    	23919,   // Aeon
+    	671,     // Erebus
+    	3764,    // Leviathan
+    	11567,   // Avatar
+    	23773    // Ragnarok
     ];
 
     while ($iterator->valid()) {
@@ -93,7 +87,7 @@ function traverseAssets($iterator) {
             if (($key == 'typeID') && (in_array($value, $super_caps))) {
                 $scap_name = getTypeNamebyID($value);
                 echo "Super found, it's an " . $scap_name . "<br/>";
-                traverseSuper(array($iterator->getArrayCopy()));
+                //traverseSuper(array($iterator->getArrayCopy()));
                 break;
             }
         }
@@ -109,6 +103,7 @@ try {
     iterator_apply($iterator, 'traverseAssets', array($iterator));
 
     //dump_shit($response);
+    $db->close();
 
 } catch (\Pheal\Exceptions\PhealException $e) {
     echo sprintf("an exception was caught! Type: %s Message: %s",
