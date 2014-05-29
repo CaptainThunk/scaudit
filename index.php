@@ -14,7 +14,7 @@ Config::getInstance()->cache = new \Pheal\Cache\FileStorage('/tmp/phealcache/');
 Config::getInstance()->access = new \Pheal\Access\StaticCheck();
 
 $pheal = new Pheal($keyID, $vCode, "char");
-$dbh = new SQLite3(dirname($_SERVER['SCRIPT_FILENAME']) . '/static_dump/sqlite-latest.sqlite');
+$db = new SQLite3(dirname($_SERVER['SCRIPT_FILENAME']) . '/static_dump/sqlite-latest.sqlite');
 
 function dump_shit($shit) {
     echo "<pre>";
@@ -23,6 +23,8 @@ function dump_shit($shit) {
 }
 
 function getTypeNamebyID($typeid) {
+    global $db;
+
     $sql = "select typeName from invTypes where typeID = :typeid";
     $query = $db->prepare($sql);
     $query = $db->bindValue(':typeid', $typeid);
@@ -31,6 +33,8 @@ function getTypeNamebyID($typeid) {
 }
 
 function getTypeIDbyName($typename) {
+    global $db;
+
     $sql = "select typeID from invTypes where typeName = :typename";
     $query = $db->prepare($sql);
     $query = $db->bindValue(':typename', $typename);
@@ -43,6 +47,8 @@ function getGroupNamebyGroupID($groupid) {
 }
 
 function getMetaLevelbyGroupID($groupid) {
+    global $db;
+
     $sql = "select typeID, typeName, (select coalesce(valueInt,valueFloat) value from dgmTypeAttributes where attributeID=633 and invTypes.typeID = typeID) as MetaLevel from invTypes where groupID = :groupid order by MetaLevel";
     $query = $db->prepare($sql);
     $query = $db->bindValue(':groupid', $groupid);
@@ -52,7 +58,7 @@ function getMetaLevelbyGroupID($groupid) {
 
 function traverseSuper($ship) {
     
-    //dump_shit($ship);
+    dump_shit($ship);
     
     foreach ($ship->contents as $key => $value) {
                     
