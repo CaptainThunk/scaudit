@@ -22,18 +22,6 @@ function dump_shit($shit) {
     echo "</pre>"; 
 }
 
-function multi_array_key_exists($key, $array) {
-    if (array_key_exists($key, $array))
-        return true;
-    else {
-        foreach ($array as $nested) {
-            if (is_array($nested) && multi_array_key_exists($key, $nested))
-                return true;
-        }
-    }
-    return false;
-}
-
 function addScapItem($typeid, $quantity) {
     global $scap_items;
     
