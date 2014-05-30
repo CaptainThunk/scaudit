@@ -14,7 +14,7 @@ Config::getInstance()->cache = new \Pheal\Cache\FileStorage('/tmp/phealcache/');
 Config::getInstance()->access = new \Pheal\Access\StaticCheck();
 
 $pheal = new Pheal($keyID, $vCode, "char");
-$db = new SQLite3(dirname($_SERVER['SCRIPT_FILENAME']) . '/static_dump/sqlite-latest.sqlite');
+$db = new SQLite3(dirname($_SERVER['SCRIPT_FILENAME']) . "/" . $static_dump);
 
 function dump_shit($shit) {
     echo "<pre>";
@@ -106,27 +106,14 @@ function walkSuper($super) {
         if (array_key_exists('contents', $item)) {
             walkSuper($item['contents']);
         } else {
-            if ($item['typeID'] && $item['quantity']) {
+            if ($item['typeID'] && $item['quantity'])
                 addScapItem($item['typeID'], $item['quantity']);
-            }
         }
     }
 }
 
 function walkAssets($assets) {
-
-    $super_caps = [ 
-    	3514,    // Revenant
-    	3628,    // Nation
-    	22852,   // Hel
-        23913,   // Nyx
-        23917,   // Wyvern
-    	23919,   // Aeon
-    	671,     // Erebus
-    	3764,    // Leviathan
-    	11567,   // Avatar
-    	23773    // Ragnarok
-    ];
+    global $super_caps;
 
     foreach ($assets as $asset) {  
 
