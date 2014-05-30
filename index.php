@@ -22,6 +22,22 @@ function dump_shit($shit) {
     echo "</pre>"; 
 }
 
+function addScapItem($typeid, $quantity) {
+    global $scap_items;
+    
+    if (!array_key_exists($typeid, $scap_items)) {
+        echo "Adding " . getTypeNamebyID($typeid) . ", Qty=" . $quantity . "<br/>";
+        $scap_items[$typeid] = $quantity;
+    } else {
+        $old_qty = $scap_items[$typeid];
+        $scap_items[$typeid] += $quantity;
+        printf("Updating quantity of %s [ Old=%d, New=%d ]<br/>",
+                                            getTypeNamebyID($typeid),
+                                            $old_qty,
+                                            $scap_items[$typeid]);
+    }
+}
+
 function getTypeNamebyID($typeid) {
     global $db;
 
@@ -50,20 +66,12 @@ function getMetaLevelbyGroupID($groupid) {
     
 }
 
-function traverseSuper($ship) {
-    
-    //dump_shit($ship);
-    
-    foreach ($ship->contents as $key => $value) {
-                    
-        // we're not interested in SMA contents
-        if (($key == 'flag') && ($value == 90))
-            continue;
-
-    }
-}
-
 function traverseAssets($iterator) {
+    global $scap_items;
+    $typeid = NULL;
+    $quantity = NULL;
+
+
     $super_caps = [ 
     	3514,    // Revenant
     	3628,    // Nation
@@ -77,9 +85,10 @@ function traverseAssets($iterator) {
     	23773    // Ragnarok
     ];
 
-    while ($iterator->valid()) {
+    while ($iterator->valid()) {        
         if ($iterator->hasChildren()) {
-            echo "going deeper...<br/>";
+            $typeid = NULL;
+            $quantity = NULL;
             traverseAssets($iterator->getChildren());
         } else {
             $key = $iterator->key();
@@ -87,13 +96,33 @@ function traverseAssets($iterator) {
             if (($key == 'typeID') && (in_array($value, $super_caps))) {
                 $scap_name = getTypeNamebyID($value);
                 echo "Super found, it's an " . $scap_name . "<br/>";
-                //traverseSuper(array($iterator->getArrayCopy()));
+                $iterator->next();
+                continue;
+            }
+
+            // we're not interested in SMA contents, skip this element
+            if (($key == 'flag') && ($value == 90)) {
+                echo "found a item in an SMA, skipping...<br/>";
+                $iterator->next();
+                continue;
+            }
+            
+            if ($key == 'typeID') {
+                // echo "Found a " . getTypeNamebyID($value) . "<br/>";
+                $typeid = $value;
+            }
+            if ($key == 'quantity') {
+                $quantity = $value;
+            }
+         
+            if (isset($typeid) && isset($quantity)) {
+                addScapItem($typeid, $quantity);
                 break;
             }
-        }
+            
+        }        
         $iterator->next(); 
     }
-    echo "<br/>";
 }
 
 try {
@@ -104,6 +133,9 @@ try {
 
     //dump_shit($response);
     $db->close();
+    
+    ksort($scap_items);
+    dump_shit($scap_items);
 
 } catch (\Pheal\Exceptions\PhealException $e) {
     echo sprintf("an exception was caught! Type: %s Message: %s",
