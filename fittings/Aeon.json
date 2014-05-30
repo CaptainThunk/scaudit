@@ -1,0 +1,15 @@
+{
+	"items": [
+	{
+		"groupID": 767,
+		"minMeta": 8,
+		"minQty": 7,
+		"storylineOK": 0
+	},
+	{
+	    "typeID": 27678,
+	    "minQty": 1	    
+	}
+	
+    ]
+}

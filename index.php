@@ -22,21 +22,47 @@ function dump_shit($shit) {
     echo "</pre>"; 
 }
 
-function addScapItem($typeid, $quantity) {
+if (!function_exists('json_last_error_msg')) {
+    function json_last_error_msg() {
+        static $errors = array(
+            JSON_ERROR_NONE             => null,
+            JSON_ERROR_DEPTH            => 'Maximum stack depth exceeded',
+            JSON_ERROR_STATE_MISMATCH   => 'Underflow or the modes mismatch',
+            JSON_ERROR_CTRL_CHAR        => 'Unexpected control character found',
+            JSON_ERROR_SYNTAX           => 'Syntax error, malformed JSON',
+            JSON_ERROR_UTF8             => 'Malformed UTF-8 characters, possibly incorrectly encoded'
+        );
+        $error = json_last_error();
+        return array_key_exists($error, $errors) ? $errors[$error] : "Unknown error ({$error})";
+    }
+}
+
+function open_json($scap_typeid) {
+
+    $scap_name = getTypeNamebyTypeID($scap_typeid);
+    $file = 'fittings/' . $scap_name . ".json";
+
+    if (file_exists($file)) {
+        $json = file_get_contents($file);
+    } else {
+        echo "could not open $file<br/>";
+    }
+    
+    if (!$rv = json_decode($json, true)) {
+        printf("JSON: could not decode %s: %s<br/>", $file, json_last_error_msg());
+        return $rv;
+    } else {
+        return($rv);
+    }
+}
+
+function addShipItem($typeid, $quantity) {
     global $scap_items;
     
     if (!array_key_exists($typeid, $scap_items)) {
-        printf("Adding %s (%s), Qty=%d<br/>", getTypeNamebyTypeID($typeid),
-                                              getGroupNamebyTypeID($typeid),
-                                              $quantity);
         $scap_items[$typeid] = $quantity;
     } else {
-        $old_qty = $scap_items[$typeid];
         $scap_items[$typeid] += $quantity;
-        printf("Updating quantity of %s [ Old=%d, New=%d ]<br/>",
-                                            getTypeNamebyTypeID($typeid),
-                                            $old_qty,
-                                            $scap_items[$typeid]);
     }
 }
 
@@ -85,17 +111,16 @@ function getMetaLevelbyGroupID($groupid) {
     
 }
 
-function displayScapItems($items) {
+function displayShipItems($items) {
     
     echo "<pre>";
     foreach ($items as $typeid => $quantity) {
         printf("%d\t%s\n", $quantity, getTypeNamebyTypeID($typeid));
     }
     echo "</pre>";
-    
 }
 
-function walkSuper($super) {
+function walkShip($super) {
 
     foreach ($super as $item) {
 
@@ -104,16 +129,17 @@ function walkSuper($super) {
             continue;
 
         if (array_key_exists('contents', $item)) {
-            walkSuper($item['contents']);
+            walkShip($item['contents']);
         } else {
             if ($item['typeID'] && $item['quantity'])
-                addScapItem($item['typeID'], $item['quantity']);
+                addShipItem($item['typeID'], $item['quantity']);
         }
     }
 }
 
 function walkAssets($assets) {
     global $super_caps;
+    global $scap_type;
 
     foreach ($assets as $asset) {  
 
@@ -121,12 +147,18 @@ function walkAssets($assets) {
             walkAssets($asset['name']);
         } else {
             if (in_array($asset['typeID'], $super_caps)) {
-                printf("Super found, it's an %s (%s)<br/>", getTypeNamebyTypeID($asset['typeID']),
-                                                            getGroupNamebyTypeID($asset['typeID']));
-                walkSuper(array($asset));
+                $scap_type = $asset['typeID'];
+                walkShip(array($asset));
             }
         }        
     }
+}
+
+function auditShip($scap_type, $scap_items) {
+    
+    $scap_required = open_json($scap_type);
+    
+    dump_shit($scap_required);
 }
 
 try {
@@ -135,10 +167,11 @@ try {
     $iterator = new RecursiveArrayIterator($response->assets);
 
     walkAssets($response->assets);
-    
     ksort($scap_items);
-    displayScapItems($scap_items);
-    
+    displayShipItems($scap_items);
+
+    auditShip($scap_type, $scap_items);
+
     $db->close();
 
 } catch (\Pheal\Exceptions\PhealException $e) {
