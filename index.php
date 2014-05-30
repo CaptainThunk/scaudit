@@ -22,33 +22,59 @@ function dump_shit($shit) {
     echo "</pre>"; 
 }
 
+function multi_array_key_exists($key, $array) {
+    if (array_key_exists($key, $array))
+        return true;
+    else {
+        foreach ($array as $nested) {
+            if (is_array($nested) && multi_array_key_exists($key, $nested))
+                return true;
+        }
+    }
+    return false;
+}
+
 function addScapItem($typeid, $quantity) {
     global $scap_items;
     
     if (!array_key_exists($typeid, $scap_items)) {
-        printf("Adding %s, Qty=%d<br/>", getTypeNamebyID($typeid), $quantity);
+        printf("Adding %s (%s), Qty=%d<br/>", getTypeNamebyTypeID($typeid),
+                                                getGroupNamebyTypeID($typeid),
+                                                $quantity);
         $scap_items[$typeid] = $quantity;
     } else {
         $old_qty = $scap_items[$typeid];
         $scap_items[$typeid] += $quantity;
         printf("Updating quantity of %s [ Old=%d, New=%d ]<br/>",
-                                            getTypeNamebyID($typeid),
+                                            getTypeNamebyTypeID($typeid),
                                             $old_qty,
                                             $scap_items[$typeid]);
     }
 }
 
-function getTypeNamebyID($typeid) {
+function getTypeNamebyTypeID($typeid) {
     global $db;
 
-    $sql = "select typeName from invTypes where typeID = $typeid";
-    return($db->querySingle($sql));
+    $sql = "select typeName from invTypes where typeID = :typeid";
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':typeid', $typeid);
+    $result = $stmt->execute();
+    $rv = $result->fetchArray();
+
+    return($rv[0]);
 }
 
-function getTypeIDbyName($typename) {
+function getTypeIDbyTypeName($typename) {
     global $db;
 
     $sql = "select typeID from invTypes where typeName = $typename";
+    return($db->querySingle($sql));
+}
+
+function getGroupNamebyTypeID($typeid) {
+    global $db;
+    
+    $sql = "select groupName, (select groupID from invTypes where typeID = $typeid) as xGroupID from invGroups where groupID = xGroupID";
     return($db->querySingle($sql));
 }
 
@@ -62,11 +88,35 @@ function getMetaLevelbyGroupID($groupid) {
     
 }
 
-function traverseAssets($iterator) {
-    global $scap_items;
-    $typeid = NULL;
-    $quantity = NULL;
+function displayScapItems($items) {
+    
+    echo "<pre>";
+    foreach ($items as $typeid => $quantity) {
+        printf("%d\t%s\n", $quantity, getTypeNamebyTypeID($typeid));
+    }
+    echo "</pre>";
+    
+}
 
+function walkSuper($super) {
+
+    foreach ($super as $item) {
+
+        // we're not interested in SMA contents, skip this one
+        if ($item['flag'] == 90)
+            continue;
+
+        if (array_key_exists('contents', $item)) {
+            walkSuper($item['contents']);
+        } else {
+            if ($item['typeID'] && $item['quantity']) {
+                addScapItem($item['typeID'], $item['quantity']);
+            }
+        }
+    }
+}
+
+function walkAssets($assets) {
 
     $super_caps = [ 
     	3514,    // Revenant
@@ -81,59 +131,32 @@ function traverseAssets($iterator) {
     	23773    // Ragnarok
     ];
 
-    while ($iterator->valid()) {  
+    foreach ($assets as $asset) {  
 
-        if ($iterator->hasChildren()) {
-            $typeid = NULL;
-            $quantity = NULL;
-            traverseAssets($iterator->getChildren());
+        if ((array_key_exists('name', $asset)) && ($asset['name'] == 'contents')) {
+            walkAssets($asset['name']);
         } else {
-            $key = $iterator->key();
-            $value = $iterator->current();
-
-            if (($key == 'typeID') && (in_array($value, $super_caps))) {
-                $scap_name = getTypeNamebyID($value);
-                printf("Super found, it's an %s<br/>", $scap_name);
-                $iterator->next();
-                continue;
+            if (in_array($asset['typeID'], $super_caps)) {
+                $scap_name = getTypeNamebyTypeID($asset['typeID']);
+                $scap_type = getGroupNamebyTypeID($asset['typeID']);
+                printf("Super found, it's an %s (%s)<br/>", $scap_name, $scap_type);
+                walkSuper(array($asset));
             }
-
-            // we're not interested in SMA contents, skip this element
-            if (($key == 'flag') && ($value == 90)) {
-                echo "found a item in an SMA, skipping...<br/>";
-                //$iterator->next();
-                continue;
-            }
-
-            if ($key == 'typeID') {
-                $typeid = $value;
-            }
-
-            if ($key == 'quantity') {
-                $quantity = $value;
-            }
-
-            if (isset($typeid) && isset($quantity)) {
-                addScapItem($typeid, $quantity);
-                break;
-            }
-
         }        
-        $iterator->next(); 
     }
 }
 
 try {
 
     $response = $pheal->AssetList(array("characterID" => $characterID));    
-    $iterator = new RecursiveArrayIterator($response->assets[0]);
-    iterator_apply($iterator, 'traverseAssets', array($iterator));
+    $iterator = new RecursiveArrayIterator($response->assets);
 
-    //dump_shit($response);
-    $db->close();
+    walkAssets($response->assets);
     
     ksort($scap_items);
-    dump_shit($scap_items);
+    displayScapItems($scap_items);
+    
+    $db->close();
 
 } catch (\Pheal\Exceptions\PhealException $e) {
     echo sprintf("an exception was caught! Type: %s Message: %s",
