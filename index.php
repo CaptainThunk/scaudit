@@ -26,7 +26,7 @@ function addScapItem($typeid, $quantity) {
     global $scap_items;
     
     if (!array_key_exists($typeid, $scap_items)) {
-        echo "Adding " . getTypeNamebyID($typeid) . ", Qty=" . $quantity . "<br/>";
+        printf("Adding %s, Qty=%d<br/>", getTypeNamebyID($typeid), $quantity);
         $scap_items[$typeid] = $quantity;
     } else {
         $old_qty = $scap_items[$typeid];
@@ -50,10 +50,6 @@ function getTypeIDbyName($typename) {
 
     $sql = "select typeID from invTypes where typeName = $typename";
     return($db->querySingle($sql));
-}
-
-function getGroupNamebyGroupID($groupid) {
-    
 }
 
 function getMetaLevelbyGroupID($groupid) {
@@ -85,7 +81,8 @@ function traverseAssets($iterator) {
     	23773    // Ragnarok
     ];
 
-    while ($iterator->valid()) {        
+    while ($iterator->valid()) {  
+
         if ($iterator->hasChildren()) {
             $typeid = NULL;
             $quantity = NULL;
@@ -93,9 +90,10 @@ function traverseAssets($iterator) {
         } else {
             $key = $iterator->key();
             $value = $iterator->current();
+
             if (($key == 'typeID') && (in_array($value, $super_caps))) {
                 $scap_name = getTypeNamebyID($value);
-                echo "Super found, it's an " . $scap_name . "<br/>";
+                printf("Super found, it's an %s<br/>", $scap_name);
                 $iterator->next();
                 continue;
             }
@@ -103,23 +101,23 @@ function traverseAssets($iterator) {
             // we're not interested in SMA contents, skip this element
             if (($key == 'flag') && ($value == 90)) {
                 echo "found a item in an SMA, skipping...<br/>";
-                $iterator->next();
+                //$iterator->next();
                 continue;
             }
-            
+
             if ($key == 'typeID') {
-                // echo "Found a " . getTypeNamebyID($value) . "<br/>";
                 $typeid = $value;
             }
+
             if ($key == 'quantity') {
                 $quantity = $value;
             }
-         
+
             if (isset($typeid) && isset($quantity)) {
                 addScapItem($typeid, $quantity);
                 break;
             }
-            
+
         }        
         $iterator->next(); 
     }
