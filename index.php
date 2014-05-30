@@ -67,16 +67,24 @@ function getTypeNamebyTypeID($typeid) {
 function getTypeIDbyTypeName($typename) {
     global $db;
 
-    $sql = "select typeID from invTypes where typeName = $typename";
-    return($db->querySingle($sql));
-}
+    $sql = "select typeID from invTypes where typeName = :typename";
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':typename', $typename);
+    $result = $stmt->execute();
+    $rv = $result->fetchArray();
+
+    return($rv[0]);}
 
 function getGroupNamebyTypeID($typeid) {
     global $db;
     
-    $sql = "select groupName, (select groupID from invTypes where typeID = $typeid) as xGroupID from invGroups where groupID = xGroupID";
-    return($db->querySingle($sql));
-}
+    $sql = "select groupName, (select groupID from invTypes where typeID = :typeid) as xGroupID from invGroups where groupID = xGroupID";
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':typeid', $typeid);
+    $result = $stmt->execute();
+    $rv = $result->fetchArray();
+
+    return($rv[0]);}
 
 function getMetaLevelbyGroupID($groupid) {
     global $db;
@@ -85,6 +93,7 @@ function getMetaLevelbyGroupID($groupid) {
     $query = $db->prepare($sql);
     $query->bindValue(':groupid', $groupid);
     $result = $query->execute();
+    $rv = $result->fetchArray();
     
 }
 
