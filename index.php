@@ -164,7 +164,6 @@ function auditShip($scap_type, $scap_items) {
 try {
 
     $response = $pheal->AssetList(array("characterID" => $characterID));    
-    $iterator = new RecursiveArrayIterator($response->assets);
 
     walkAssets($response->assets);
     ksort($scap_items);
