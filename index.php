@@ -27,8 +27,8 @@ function addScapItem($typeid, $quantity) {
     
     if (!array_key_exists($typeid, $scap_items)) {
         printf("Adding %s (%s), Qty=%d<br/>", getTypeNamebyTypeID($typeid),
-                                                getGroupNamebyTypeID($typeid),
-                                                $quantity);
+                                              getGroupNamebyTypeID($typeid),
+                                              $quantity);
         $scap_items[$typeid] = $quantity;
     } else {
         $old_qty = $scap_items[$typeid];
@@ -134,9 +134,8 @@ function walkAssets($assets) {
             walkAssets($asset['name']);
         } else {
             if (in_array($asset['typeID'], $super_caps)) {
-                $scap_name = getTypeNamebyTypeID($asset['typeID']);
-                $scap_type = getGroupNamebyTypeID($asset['typeID']);
-                printf("Super found, it's an %s (%s)<br/>", $scap_name, $scap_type);
+                printf("Super found, it's an %s (%s)<br/>", getTypeNamebyTypeID($asset['typeID']),
+                                                            getGroupNamebyTypeID($asset['typeID']));
                 walkSuper(array($asset));
             }
         }        
