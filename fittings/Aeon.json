@@ -113,16 +113,23 @@
     {
         "description": "Drone Damage Amps",
         "groupID": 938,
-        "minMeta": 5,
+        "minMeta": 8,
         "minQty": 4,
         "nameContains": "Drone Damage Amplifier$"
     },
     {
         "description": "Omnidirectional Tracking Links",
         "groupID": 938,
+        "minMeta": 8,
+        "minQty": 4,
+        "nameContains": "Omnidirectional Tracking Link"
+    },
+    {
+        "description": "Drone Navigation Computers",
+        "groupID": 938,
         "minMeta": 5,
         "minQty": 4,
-        "nameContains": "Omnidirectional Tracking Link$"
+        "nameContains": "Drone Navigation Computer"
     },
     {
         "description": "Heavy Neuts",
