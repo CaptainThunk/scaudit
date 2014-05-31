@@ -110,6 +110,11 @@
         "minQty": 2
     },
     {
+        "description": "Reactive Armor Hardener",
+        "typeID": 4403,
+        "minQty": 1
+    },
+    {
         "description": "Capital Remote Armor Reppers",
         "groupID": 1056,
         "minMeta": 2,

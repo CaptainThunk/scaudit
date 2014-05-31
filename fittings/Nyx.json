@@ -116,6 +116,11 @@
         "minQty": 2
     },
     {
+        "description": "Reactive Armor Hardener",
+        "typeID": 4403,
+        "minQty": 1
+    },
+    {
         "description": "Capital Remote Cap Xfers",
         "groupID": 910,
         "minMeta": 2,
