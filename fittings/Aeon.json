@@ -282,6 +282,11 @@
         "minQty": 2000
     },
     {
+        "description": "Helium Isotopes",
+        "typeID": 16274,
+        "minQty": 100000
+    },
+    {
         "description": "Your Honor",
         "typeID": 33023,
         "minQty": 1

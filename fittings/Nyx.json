@@ -283,6 +283,11 @@
         "minQty": 400
     },
     {
+        "description": "Oxygen Isotopes",
+        "typeID": 17887,
+        "minQty": 100000
+    },
+    {
         "description": "Nanite Repair Paste",
         "typeID": 28668,
         "minQty": 2000
