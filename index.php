@@ -155,10 +155,44 @@ function walkAssets($assets) {
 }
 
 function auditShip($scap_type, $scap_items) {
-    
+
+    $description = $nameContains = "";
+    $groupID = $typeID = $minMeta = $minQty = 0;
+    $storylineOK = $officerTrumpsAll = FALSE;
+
     $scap_required = open_json($scap_type);
+
+    for ($scape_required['items'] as $item) {
+
+        // Should always be defined
+        $description = $item['description'];
+        $minQty = $item['minQty'];
+
+        // groupID or typeID should always be defined
+        if (array_key_exists('groupID', $item))
+            $groupID = $item['groupID'];
+
+        if (array_key_exists('typeID', $item))
+            $typeID = $item['typeID'];
+
+        // Optional parameters
+        if (array_key_exists('minMeta', $item))
+            $minMeta = $item['minMeta'];
+
+        if (array_key_exists('nameContains', $item))
+            $nameContains = $item['nameContains'];
+
+        if (array_key_exists('storylineOK', $item))
+            $storylineOK = $item['storylineOK'];
+
+        if (array_key_exists('officerTrumpsAll', $item))
+            $officerTrumpsAll = $item['officerTrumpsAll'];
+
+    }
     
-    dump_shit($scap_required);
+    //dump_shit($scap_required);
+
+
 }
 
 try {
