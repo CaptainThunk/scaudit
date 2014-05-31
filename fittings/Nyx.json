@@ -138,6 +138,16 @@
         "nameContains": "Drone Navigation Computer"
     },
     {
+        "description": "Fighter Bombers",
+        "groupID": 1310,
+        "minQty": 10
+    },
+    {
+        "description": "Fighters",
+        "groupID": 840,
+        "minQty": 10
+    },
+    {
         "description": "Heavy Neuts",
         "groupID": 691,
         "minMeta": 8,
