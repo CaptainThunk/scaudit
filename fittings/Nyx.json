@@ -1,290 +1,290 @@
 {
-	"items": [
-	{
-		"description": "Cap Power Relays",
-		"groupID": 767,
-		"minMeta": 8,
-		"minQty": 6
-	},
-	{
-		"description": "Cap Rechargers",
-		"groupID": 47,
-		"minMeta": 5,
-		"minQty": 5
-	},
-	{
-		"description": "Large Cap Batteries",
-		"groupID": 705,
-		"minMeta": 5,
-		"minQty": 5
-	},
-	{
-		"description": "T2 Trimarks",
-		"groupID": 956,
-		"minMeta": 5,
-		"minQty": 3,
-		"nameContains": "^(Capital|Large)"
-	},
-	{
-		"description": "Energized Layering Membrane",
-	    "typeID": 11239,
-		"minMeta": 5,
-	    "minQty": 2    
-	},
-	{
-		"description": "A-Type EANMs or better",
-		"groupID": 1686,
-		"minMeta": 13,
-		"minQty": 2
-	},
-	{
-		"description": "A-Type EM Membranes or better",
-		"groupID": 1684,
-		"minMeta": 13,
-		"minQty": 2
-	},
-	{
-		"description": "A-Type Explosive Membranes or better",
-		"groupID": 1682,
-		"minMeta": 13,
-		"minQty": 2
-	},
-	{
-		"description": "A-Type Kinetic Membranes or better",
-		"groupID": 1683,
-		"minMeta": 13,
-		"minQty": 2
-	},
-	{
-		"description": "A-Type Thermic Membranes or better",
-		"groupID": 1685,
-		"minMeta": 13,
-		"minQty": 2
-	},
-	{
-		"description": "X-Type EM Hardener or better",
-		"groupID": 1681,
-		"minMeta": 13,
-		"minQty": 1
-	},
-	{
-		"description": "X-Type Explosive Hardener or better",
-		"groupID": 1680,
-		"minMeta": 13,
-		"minQty": 1
-	},
-	{
-		"description": "X-Type Kinetic Hardener or better",
-		"groupID": 1679,
-		"minMeta": 13,
-		"minQty": 1
-	},
-	{
-		"description": "X-Type Thermic Hardener or better",
-		"groupID": 1678,
-		"minMeta": 13,
-		"minQty": 1
-	},
-	{
-		"description": "Capital Remote Armor Reppers",
-		"groupID": 1056,
-		"minMeta": 2,
-		"minQty": 2
-	},
-	{
-		"description": "Capital Remote Cap Xfers",
-		"groupID": 910,
-		"minMeta": 2,
-		"minQty": 2
-	},
-	{
-		"description": "Capital Remote Shield Xfers",
-		"groupID": 600,
-		"minMeta": 2,
-		"minQty": 1
-	},
-	{
-		"description": "Cloaking Device",
-		"groupID": 675,
-		"minMeta": 8,
-		"minQty": 1,
-		"storylineOK": true
-	},
-	{
-		"description": "Sensor Boosters",
-		"groupID": 671,
-		"minMeta": 5,
-		"minQty": 3
-	},
-	{
-		"description": "Drone Damage Amps",
-		"groupID": 938,
-		"minMeta": 5,
-		"minQty": 4,
-		"nameContains": "Drone Damage Amplifier$"
-	},
-	{
-		"description": "Omnidirectional Tracking Links",
-		"groupID": 938,
-		"minMeta": 5,
-		"minQty": 4,
-		"nameContains": "Omnidirectional Tracking Link$"
-	},
-	{
-		"description": "Heavy Neuts",
-		"groupID": 691,
-		"minMeta": 8,
-		"minQty": 3
-	},
-	{
-		"description": "Large EMP Smartbombs",
-		"groupID": 381,
-		"minMeta": 8,
-		"minQty": 2,
-		"nameContains": "\\sEMP\\s"
-	},
-	{
-		"description": "Micro Warp Drive",
-		"groupID": 131,
-		"minMeta": 14,
-		"minQty": 1,
-		"nameContains": "^100MN"
-	},
-	{
-		"description": "Inertia Stabs",
-		"groupID": 1086,
-		"minMeta": 5,
-		"minQty": 3,
-		"storylineOK": true
-	},
-	{
-		"description": "Overdrives",
-		"groupID": 1087,
-		"minMeta": 5,
-		"minQty": 3,
-		"storylineOK": true
-	},
-	{
-		"description": "DCU",
-	    "typeID": 615,
-		"minMeta": 5,
-	    "minQty": 1
-	},
-	{
-		"description": "Remote ECM Burst",
-	    "typeID": 27678,
-	    "minQty": 1
-	},
-	{
-		"description": "Mobile Depots",
-		"groupID": 1831,
-		"minQty": 4
-	},
-	{
-		"description": "Mobile Cyno Inhibitor",
-		"groupID": 1832,
-		"minQty": 1
-	},
-	{
-		"description": "Large T2 Bubble",
-	    "typeID": 26888,
-	    "minQty": 1
-	},
-	{
-		"description": "Optimal Range Script",
-	    "typeID": 28999,
-	    "minQty": 4
-	},
-	{
-		"description": "Tracking Speed Script",
-	    "typeID": 29001,
-	    "minQty": 4
-	},
-	{
-		"description": "Scan Resolution Script",
-	    "typeID": 29011,
-	    "minQty": 3
-	},
-	{
-		"description": "Target Painter",
-		"groupID": 757,
-		"minMeta": 8,
-		"minQty": 1
-	},
-	{
-		"description": "Warp Disruptor",
-		"groupID": 682,
-		"minMeta": 8,
-		"minQty": 1,
-		"officerTrumpsAll": true,
-		"nameContains": "^(Republic Fleet|Domination).*Warp Disruptor$"
-	},
-	{
-		"description": "Warp Scram",
-		"groupID": 682,
-		"minMeta": 8,
-		"minQty": 1,
-		"officerTrumpsAll": true,
-		"nameContains": "^(True Sansha|Domination).*Warp Scrambler$"
-	},
-	{
-		"description": "Stasis Web",
-		"groupID": 683,
-		"minMeta": 8,
-		"minQty": 1,
-		"officerTrumpsAll": true,
-		"nameContains": "^(True Sansha|Federation Navy)"
-	},
-	{
-		"description": "ECM - Caldari (Gravimetric) Jammers",
-		"groupID": 717,
-		"minMeta": 4,
-		"minQty": 4
-	},
-	{
-		"description": "ECM - Minmatar (Ladar) Jammers",
-		"groupID": 716,
-		"minMeta": 4,
-		"minQty": 4
-	},
-	{
-		"description": "ECM - Gallente (Magnetometric) Jammers",
-		"groupID": 715,
-		"minMeta": 4,
-		"minQty": 4
-	},
-	{
-		"description": "ECM - Amarr (Radar) Jammers",
-		"groupID": 718,
-		"minMeta": 4,
-		"minQty": 4
-	},
-	{
-		"description": "ECM - MultiSpec Jammers",
-		"groupID": 719,
-		"minMeta": 4,
-		"minQty": 4
-	},
-	{
-		"description": "Cyno",
-	    "typeID": 21096,
-	    "minQty": 1
-	},
-	{
-		"description": "Liquid Ozone",
-	    "typeID": 16273,
-	    "minQty": 400
-	},
-	{
-		"description": "Nanite Repair Paste",
-	    "typeID": 28668,
-	    "minQty": 2000
-	},
-	{
-		"description": "Your Honor",
-	    "typeID": 33023,
-	    "minQty": 1
-	}
+    "items": [
+    {
+        "description": "Cap Power Relays",
+        "groupID": 767,
+        "minMeta": 8,
+        "minQty": 6
+    },
+    {
+        "description": "Cap Rechargers",
+        "groupID": 47,
+        "minMeta": 5,
+        "minQty": 5
+    },
+    {
+        "description": "Large Cap Batteries",
+        "groupID": 705,
+        "minMeta": 5,
+        "minQty": 5
+    },
+    {
+        "description": "T2 Trimarks",
+        "groupID": 956,
+        "minMeta": 5,
+        "minQty": 3,
+        "nameContains": "^(Capital|Large)"
+    },
+    {
+        "description": "Energized Layering Membrane",
+        "typeID": 11239,
+        "minMeta": 5,
+        "minQty": 2    
+    },
+    {
+        "description": "A-Type EANMs or better",
+        "groupID": 1686,
+        "minMeta": 13,
+        "minQty": 2
+    },
+    {
+        "description": "A-Type EM Membranes or better",
+        "groupID": 1684,
+        "minMeta": 13,
+        "minQty": 2
+    },
+    {
+        "description": "A-Type Explosive Membranes or better",
+        "groupID": 1682,
+        "minMeta": 13,
+        "minQty": 2
+    },
+    {
+        "description": "A-Type Kinetic Membranes or better",
+        "groupID": 1683,
+        "minMeta": 13,
+        "minQty": 2
+    },
+    {
+        "description": "A-Type Thermic Membranes or better",
+        "groupID": 1685,
+        "minMeta": 13,
+        "minQty": 2
+    },
+    {
+        "description": "X-Type EM Hardener or better",
+        "groupID": 1681,
+        "minMeta": 13,
+        "minQty": 1
+    },
+    {
+        "description": "X-Type Explosive Hardener or better",
+        "groupID": 1680,
+        "minMeta": 13,
+        "minQty": 1
+    },
+    {
+        "description": "X-Type Kinetic Hardener or better",
+        "groupID": 1679,
+        "minMeta": 13,
+        "minQty": 1
+    },
+    {
+        "description": "X-Type Thermic Hardener or better",
+        "groupID": 1678,
+        "minMeta": 13,
+        "minQty": 1
+    },
+    {
+        "description": "Capital Remote Armor Reppers",
+        "groupID": 1056,
+        "minMeta": 2,
+        "minQty": 2
+    },
+    {
+        "description": "Capital Remote Cap Xfers",
+        "groupID": 910,
+        "minMeta": 2,
+        "minQty": 2
+    },
+    {
+        "description": "Capital Remote Shield Xfers",
+        "groupID": 600,
+        "minMeta": 2,
+        "minQty": 1
+    },
+    {
+        "description": "Cloaking Device",
+        "groupID": 675,
+        "minMeta": 8,
+        "minQty": 1,
+        "storylineOK": true
+    },
+    {
+        "description": "Sensor Boosters",
+        "groupID": 671,
+        "minMeta": 5,
+        "minQty": 3
+    },
+    {
+        "description": "Drone Damage Amps",
+        "groupID": 938,
+        "minMeta": 5,
+        "minQty": 4,
+        "nameContains": "Drone Damage Amplifier$"
+    },
+    {
+        "description": "Omnidirectional Tracking Links",
+        "groupID": 938,
+        "minMeta": 5,
+        "minQty": 4,
+        "nameContains": "Omnidirectional Tracking Link$"
+    },
+    {
+        "description": "Heavy Neuts",
+        "groupID": 691,
+        "minMeta": 8,
+        "minQty": 3
+    },
+    {
+        "description": "Large EMP Smartbombs",
+        "groupID": 381,
+        "minMeta": 8,
+        "minQty": 2,
+        "nameContains": "\\sEMP\\s"
+    },
+    {
+        "description": "Micro Warp Drive",
+        "groupID": 131,
+        "minMeta": 14,
+        "minQty": 1,
+        "nameContains": "^100MN"
+    },
+    {
+        "description": "Inertia Stabs",
+        "groupID": 1086,
+        "minMeta": 5,
+        "minQty": 3,
+        "storylineOK": true
+    },
+    {
+        "description": "Overdrives",
+        "groupID": 1087,
+        "minMeta": 5,
+        "minQty": 3,
+        "storylineOK": true
+    },
+    {
+        "description": "DCU",
+        "typeID": 615,
+        "minMeta": 5,
+        "minQty": 1
+    },
+    {
+        "description": "Remote ECM Burst",
+        "typeID": 27678,
+        "minQty": 1
+    },
+    {
+        "description": "Mobile Depots",
+        "groupID": 1831,
+        "minQty": 4
+    },
+    {
+        "description": "Mobile Cyno Inhibitor",
+        "groupID": 1832,
+        "minQty": 1
+    },
+    {
+        "description": "Large T2 Bubble",
+        "typeID": 26888,
+        "minQty": 1
+    },
+    {
+        "description": "Optimal Range Script",
+        "typeID": 28999,
+        "minQty": 4
+    },
+    {
+        "description": "Tracking Speed Script",
+        "typeID": 29001,
+        "minQty": 4
+    },
+    {
+        "description": "Scan Resolution Script",
+        "typeID": 29011,
+        "minQty": 3
+    },
+    {
+        "description": "Target Painter",
+        "groupID": 757,
+        "minMeta": 8,
+        "minQty": 1
+    },
+    {
+        "description": "Warp Disruptor",
+        "groupID": 682,
+        "minMeta": 8,
+        "minQty": 1,
+        "officerTrumpsAll": true,
+        "nameContains": "^(Republic Fleet|Domination).*Warp Disruptor$"
+    },
+    {
+        "description": "Warp Scram",
+        "groupID": 682,
+        "minMeta": 8,
+        "minQty": 1,
+        "officerTrumpsAll": true,
+        "nameContains": "^(True Sansha|Domination).*Warp Scrambler$"
+    },
+    {
+        "description": "Stasis Web",
+        "groupID": 683,
+        "minMeta": 8,
+        "minQty": 1,
+        "officerTrumpsAll": true,
+        "nameContains": "^(True Sansha|Federation Navy)"
+    },
+    {
+        "description": "ECM - Caldari (Gravimetric) Jammers",
+        "groupID": 717,
+        "minMeta": 4,
+        "minQty": 4
+    },
+    {
+        "description": "ECM - Minmatar (Ladar) Jammers",
+        "groupID": 716,
+        "minMeta": 4,
+        "minQty": 4
+    },
+    {
+        "description": "ECM - Gallente (Magnetometric) Jammers",
+        "groupID": 715,
+        "minMeta": 4,
+        "minQty": 4
+    },
+    {
+        "description": "ECM - Amarr (Radar) Jammers",
+        "groupID": 718,
+        "minMeta": 4,
+        "minQty": 4
+    },
+    {
+        "description": "ECM - MultiSpec Jammers",
+        "groupID": 719,
+        "minMeta": 4,
+        "minQty": 4
+    },
+    {
+        "description": "Cyno",
+        "typeID": 21096,
+        "minQty": 1
+    },
+    {
+        "description": "Liquid Ozone",
+        "typeID": 16273,
+        "minQty": 400
+    },
+    {
+        "description": "Nanite Repair Paste",
+        "typeID": 28668,
+        "minQty": 2000
+    },
+    {
+        "description": "Your Honor",
+        "typeID": 33023,
+        "minQty": 1
+    }
 
     ]
 }
