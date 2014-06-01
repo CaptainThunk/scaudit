@@ -111,6 +111,24 @@ function getMetaLevelbyGroupID($groupid) {
     
 }
 
+function getTypeIDSbyMktGroupID($mktgroupid){
+    global $db;
+    $typeids = [];
+    $i = 0;
+
+    $sql = "select typeID from invTypes where marketgroupID = :mgroupid";
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':mgroupid', $mktgroupid);
+    $result = $stmt->execute();
+    
+    while ($res = $result->fetchArray(SQLITE3_NUM)) {
+        $typeids[$i] = $res[0];
+        $i++;
+    }
+    
+    return($typeids);
+}
+
 function displayShipItems($items) {
     
     echo "<pre>";
@@ -200,21 +218,39 @@ function auditShip($scap_type, $scap_items) {
         if ($typeID) {
             if (!array_key_exists($typeID, $scap_items)) {
                 $item_name = getTypeNamebyTypeID($typeID);
-                $results['fail'][$typeID] = "Not present. You need to have $minQty of $item_name";
+                $results['fail']['typeid'][$typeID]['reason'] = "Not present. You need to have $minQty of $item_name";
                 $f++;
                 continue;
             }
             if ($scap_items[$typeID] < $minQty) {
-                $results['fail'][$typeID] = "Not enough. You have $scap_items[$typeID], You need $minQty ";
+                $item_name = getTypeNamebyTypeID($typeID);
+                $results['fail']['typeid'][$typeID]['reason'] = "Not enough. You have $scap_items[$typeID] $item_name, You need $minQty ";
                 $f++;
                 continue;
             }
-            $results['pass'][$p] = $typeID;
+            $results['pass'][$p]['typeid'] = $typeID;
             $p++;
+            continue;
         }
         
         // Items required by Group ID
+        if ($groupID) {
+            $group_items = getTypeIDSbyMktGroupID($groupID);
 
+            foreach ($group_items as $item) {
+                if ($f)
+                    break;
+
+                if (!array_key_exists($item, $scap_items)) {
+                    $item_name = getTypeNamebyTypeID($item);
+                    $results['fail']['groupid'][$groupID]['reason'] = "Not present. You need to have $minQty of $item_name";
+                    $f++;
+                    break;
+                }
+            }
+            $results['pass'][$p]['groupid'] = $groupID;
+            $p++;
+        }
     }
 
     dump_shit($results);
