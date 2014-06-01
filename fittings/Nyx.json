@@ -2,13 +2,13 @@
     "items": [
     {
         "description": "Cap Power Relays",
-        "groupID": 767,
+        "groupID": 667,
         "minMeta": 8,
         "minQty": 6
     },
     {
         "description": "Cap Rechargers",
-        "groupID": 47,
+        "groupID": 665,
         "minMeta": 5,
         "minQty": 5
     },
