@@ -212,8 +212,7 @@
     },
     {
         "description": "DCU",
-        "typeID": 615,
-        "minMeta": 5,
+        "typeID": 2048,
         "minQty": 1
     },
     {
