@@ -1,6 +1,7 @@
 <?php
 require_once 'vendor/autoload.php';
 require 'include/settings.php';
+require 'include/html_table.class.php';
 
 use Pheal\Pheal;
 use Pheal\Core\Config;
@@ -148,30 +149,34 @@ function getTypeNameSbyMktGroupID($mktgroupid) {
     return($typenames);
 }
 
-function getTypeNamesbyMktGroupIDregex($mktgroupid, $regexp) {
-    $i = 0;
-    $types = [];
-    $typenames = getTypeNameSbyMktGroupID($mktgroupid);
+function printResults() {
+    global $results;
+
+    $tbl = new HTML_Table('', 'resultsTbl');
+    $tbl->addCaption('SC-Legion Audit Results', 'cap', array('id'=> 'tblCap') );
     
-    foreach ($typenames as $name) {
-        if (preg_match($regexp, $name)) {
-            $types[$i] = $name;
-            $i++;
-        }
+    $tbl->addRow();
+    $tbl->addCell('You Passed On:', '', 'header');
+    
+    foreach ($results['pass'] as $result) {
+        $tbl->addRow();
+        $tbl->addCell($result['description']);
+    }
+
+    $tbl->addRow();
+    $tbl->addCell('&nbsp');
+
+    $tbl->addRow();
+    $tbl->addCell('You Failed On:', '', 'header');
+    
+    foreach ($results['fail'] as $result) {
+        $tbl->addRow();
+        $tbl->addCell($result['reason']);
     }
     
-    dump_shit($types);
-    return($types);
-}
-
-
-function displayShipItems($items) {
-    
-    echo "<pre>";
-    foreach ($items as $typeid => $quantity) {
-        printf("%d\t%s\n", $quantity, getTypeNamebyTypeID($typeid));
-    }
-    echo "</pre>";
+    echo "<HTML><BODY BGCOLOR=\"#ddd\">";
+    echo $tbl->display();
+    echo "</BODY></HTML>";
 }
 
 function walkShip($super) {
@@ -209,7 +214,6 @@ function walkAssets($assets) {
 }
 
 function auditShip($scap_type, $scap_items) {
-
     global $results;
     $p = 0;
     $f = 0;
@@ -219,7 +223,7 @@ function auditShip($scap_type, $scap_items) {
     foreach ($scap_required['items'] as $required_item) {
 
         // Initialize local vars to defaults
-        $description = $nameContains = $pattern = "";
+        $description = $nameContains = "";
         $groupID = $typeID = $minMeta = $minQty = 0;
         $storylineOK = $officerTrumpsAll = FALSE;
         $pass = FALSE;
@@ -249,26 +253,32 @@ function auditShip($scap_type, $scap_items) {
             $officerTrumpsAll = $required_item['officerTrumpsAll'];    
 
         // Let's see how bad this super pilot is
-        
+
         // Items required by Type ID
         if ($typeID) {
             if (!array_key_exists($typeID, $scap_items)) {
                 $item_name = getTypeNamebyTypeID($typeID);
-                $results['fail']['typeid'][$typeID]['reason'] = "Not present. You need to have $minQty of $item_name";
+                $results['fail'][$f]['typeid'] = $typeID;
+                $results['fail'][$f]['description'] = $description;
+                $results['fail'][$f]['reason'] = "You do not have at least $minQty $item_name";
                 $f++;
                 continue;
             }
             if ($scap_items[$typeID] < $minQty) {
                 $item_name = getTypeNamebyTypeID($typeID);
-                $results['fail']['typeid'][$typeID]['reason'] = "Not enough. You have $scap_items[$typeID] $item_name, You need $minQty ";
+                $results['fail'][$f]['typeid'] = $typeID;
+                $results['fail'][$f]['description'] = $description;
+                $results['fail'][$f]['reason'] = "You do not have at least $minQty $item_name";
                 $f++;
                 continue;
             }
             $results['pass'][$p]['typeid'] = $typeID;
+            $results['pass'][$p]['description'] = $description;
+            $results['pass'][$p]['quantity'] = $scap_items[$typeID];
             $p++;
             continue;
         }
-        
+
         // Items required by Group ID
         if ($groupID) {
             $group_qty = 0;
@@ -281,6 +291,16 @@ function auditShip($scap_type, $scap_items) {
 
                     if ($group_item_meta >= $minMeta) {
 
+                        if ($nameContains) {
+                            $pattern = "/" . $nameContains . "/";
+                            $item_name = getTypeNamebyTypeID($group_item);
+
+                            if (preg_match($pattern, $item_name)) {
+                                $group_qty += $scap_items[$group_item];
+                                continue;
+                            }
+                        }
+
                         if (($officerTrumpsAll) && ($group_item_meta >= 11)) {
                             $group_qty += $scap_items[$group_item];
                             continue;
@@ -291,45 +311,35 @@ function auditShip($scap_type, $scap_items) {
                             continue;
                         }
 
-                        if ($nameContains) {
-                            $pattern = "/" . $nameContains . "/";
-                            $item_name = getTypeNamebyTypeID($group_item);
-dump_shit($pattern);
-                            if (preg_match($pattern, $item_name)) {
-                                $group_qty += $scap_items[$group_item];
-                                continue;
-                            }
-                        }
+                        $group_qty += $scap_items[$group_item];
                     }
-                    $group_qty += $scap_items[$group_item];
                 }
             }
 
             if ($group_qty < $minQty) {
-                
-                $failmsg = "You do not have at least " . $minQty . " of " . $description . " which need to be Meta " . $minMeta . " or better.";
-                
-                if ($storylineOK)
-                    $failmsg += " Storyline version is OK";
-                
-                if ($nameContains) {
-                    dump_shit($pattern);
-                    $item_names = getTypeNamesbyMktGroupIDregex($groupID, $pattern);
-                }
 
-                $results['fail']['groupid'][$groupID]['reason'] = $failmsg;
+                $failmsg = "You do not have at least " . $minQty .
+                           " of " . $description . 
+                           " which need to be Meta " . $minMeta . " or better.";
+
+                if ($storylineOK)
+                    $failmsg = $failmsg . " The Storyline version is OK";
+
+                $results['fail'][$f]['groupid'] = $groupID;
+                $results['fail'][$f]['description'] = $description;
+                $results['fail'][$f]['reason'] = $failmsg;
                 $f++;
                 continue;
             } else {
                 $results['pass'][$p]['groupid'] = $groupID;
+                $results['pass'][$p]['description'] = $description;
+                $results['pass'][$p]['quantity'] = $group_qty;
                 $p++;
                 continue;
             }
             
         }
     }
-
-    dump_shit($results);
 }
 
 try {
@@ -338,6 +348,8 @@ try {
 
     walkAssets($response->assets);
     auditShip($scap_type, $scap_items);
+    
+    printResults();
 
     $db->close();
 
