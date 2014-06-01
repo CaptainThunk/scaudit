@@ -164,7 +164,7 @@
         "groupID": 938,
         "minMeta": 5,
         "minQty": 4,
-        "nameContains": "Drone Navigation Computer"
+        "nameContains": "Drone Navigation Computer( II)?"
     },
     {
         "description": "Fighter Bombers",
@@ -187,28 +187,26 @@
         "groupID": 381,
         "minMeta": 8,
         "minQty": 2,
-        "nameContains": "\\sEMP\\s"
+        "nameContains": "Large EMP"
     },
     {
         "description": "Micro Warp Drive",
         "groupID": 131,
         "minMeta": 14,
         "minQty": 1,
-        "nameContains": "^100MN"
+        "nameContains": "100MN"
     },
     {
         "description": "Inertia Stabs",
         "groupID": 1086,
         "minMeta": 5,
-        "minQty": 3,
-        "storylineOK": true
+        "minQty": 3
     },
     {
         "description": "Overdrives",
         "groupID": 1087,
         "minMeta": 5,
-        "minQty": 3,
-        "storylineOK": true
+        "minQty": 3
     },
     {
         "description": "DCU",

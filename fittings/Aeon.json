@@ -151,14 +151,14 @@
         "groupID": 938,
         "minMeta": 8,
         "minQty": 4,
-        "nameContains": "Omnidirectional Tracking Link"
+        "nameContains": "Omnidirectional Tracking Link$"
     },
     {
         "description": "Drone Navigation Computers",
         "groupID": 938,
         "minMeta": 5,
         "minQty": 4,
-        "nameContains": "Drone Navigation Computer"
+        "nameContains": "Drone Navigation Computer( II)?$"
     },
     {
         "description": "Fighter Bombers",
@@ -181,28 +181,26 @@
         "groupID": 381,
         "minMeta": 8,
         "minQty": 2,
-        "nameContains": "\\sEMP\\s"
+        "nameContains": "Large EMP"
     },
     {
         "description": "Micro Warp Drive",
         "groupID": 131,
         "minMeta": 14,
         "minQty": 1,
-        "nameContains": "^100MN"
+        "nameContains": "100MN"
     },
     {
         "description": "Inertia Stabs",
         "groupID": 1086,
         "minMeta": 5,
-        "minQty": 3,
-        "storylineOK": true
+        "minQty": 3
     },
     {
         "description": "Overdrives",
         "groupID": 1087,
         "minMeta": 5,
-        "minQty": 3,
-        "storylineOK": true
+        "minQty": 3
     },
     {
         "description": "DCU",
@@ -256,7 +254,7 @@
         "minMeta": 8,
         "minQty": 1,
         "officerTrumpsAll": true,
-        "nameContains": "^(Republic Fleet|Domination).*Warp Disruptor$"
+        "nameContains": "^(Republic Fleet|Domination).*Disruptor$"
     },
     {
         "description": "Warp Scram",
@@ -264,7 +262,7 @@
         "minMeta": 8,
         "minQty": 1,
         "officerTrumpsAll": true,
-        "nameContains": "^(True Sansha|Domination).*Warp Scrambler$"
+        "nameContains": "^(True Sansha|Domination).*Scrambler$"
     },
     {
         "description": "Stasis Web",
@@ -272,7 +270,7 @@
         "minMeta": 8,
         "minQty": 1,
         "officerTrumpsAll": true,
-        "nameContains": "^(True Sansha|Federation Navy)"
+        "nameContains": "^(True Sansha|Federation Navy).*Webifier$"
     },
     {
         "description": "ECM - Caldari (Gravimetric) Jammers",
