@@ -156,19 +156,25 @@ function walkAssets($assets) {
 
 function auditShip($scap_type, $scap_items) {
 
-    $description = $nameContains = "";
-    $groupID = $typeID = $minMeta = $minQty = 0;
-    $storylineOK = $officerTrumpsAll = FALSE;
+    global $results;
+    $p = 0;
+    $f = 0;
 
     $scap_required = open_json($scap_type);
 
-    for ($scape_required['items'] as $item) {
+    foreach ($scap_required['items'] as $item) {
+
+        // Initialize local vars to defaults
+        $description = $nameContains = "";
+        $groupID = $typeID = $minMeta = $minQty = 0;
+        $storylineOK = $officerTrumpsAll = FALSE;
+        $pass = FALSE;
 
         // Should always be defined
         $description = $item['description'];
         $minQty = $item['minQty'];
 
-        // groupID or typeID should always be defined
+        // groupID OR typeID should always be defined
         if (array_key_exists('groupID', $item))
             $groupID = $item['groupID'];
 
@@ -186,13 +192,32 @@ function auditShip($scap_type, $scap_items) {
             $storylineOK = $item['storylineOK'];
 
         if (array_key_exists('officerTrumpsAll', $item))
-            $officerTrumpsAll = $item['officerTrumpsAll'];
+            $officerTrumpsAll = $item['officerTrumpsAll'];    
+
+        // Let's see how bad this super pilot is
+        
+        // Items required by Type ID
+        if ($typeID) {
+            if (!array_key_exists($typeID, $scap_items)) {
+                $item_name = getTypeNamebyTypeID($typeID);
+                $results['fail'][$typeID] = "Not present. You need to have $minQty of $item_name";
+                $f++;
+                continue;
+            }
+            if ($scap_items[$typeID] < $minQty) {
+                $results['fail'][$typeID] = "Not enough. You have $scap_items[$typeID], You need $minQty ";
+                $f++;
+                continue;
+            }
+            $results['pass'][$p] = $typeID;
+            $p++;
+        }
+        
+        // Items required by Group ID
 
     }
-    
-    //dump_shit($scap_required);
 
-
+    dump_shit($results);
 }
 
 try {
@@ -200,8 +225,8 @@ try {
     $response = $pheal->AssetList(array("characterID" => $characterID));    
 
     walkAssets($response->assets);
-    ksort($scap_items);
-    displayShipItems($scap_items);
+    //ksort($scap_items);
+    //displayShipItems($scap_items);
 
     auditShip($scap_type, $scap_items);
 
