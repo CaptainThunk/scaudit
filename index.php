@@ -256,15 +256,9 @@ function auditShip($scap_type, $scap_items) {
 
         // Items required by Type ID
         if ($typeID) {
-            if (!array_key_exists($typeID, $scap_items)) {
-                $item_name = getTypeNamebyTypeID($typeID);
-                $results['fail'][$f]['typeid'] = $typeID;
-                $results['fail'][$f]['description'] = $description;
-                $results['fail'][$f]['reason'] = "You do not have at least $minQty $item_name";
-                $f++;
-                continue;
-            }
-            if ($scap_items[$typeID] < $minQty) {
+            if ((!array_key_exists($typeID, $scap_items)) ||
+                ($scap_items[$typeID] < $minQty)) {
+
                 $item_name = getTypeNamebyTypeID($typeID);
                 $results['fail'][$f]['typeid'] = $typeID;
                 $results['fail'][$f]['description'] = $description;
