@@ -112,7 +112,7 @@ function getMetaLevelbyTypeID($typeid) {
     return($rv[0]);
 }
 
-function getTypeIDSbyMktGroupID($mktgroupid){
+function getTypeIDSbyMktGroupID($mktgroupid) {
     global $db;
     $typeids = [];
     $i = 0;
@@ -129,6 +129,41 @@ function getTypeIDSbyMktGroupID($mktgroupid){
     
     return($typeids);
 }
+
+function getTypeNameSbyMktGroupID($mktgroupid) {
+    global $db;
+    $typenames = [];
+    $i = 0;
+
+    $sql = "select typeName from invTypes where marketgroupID = :mgroupid";
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':mgroupid', $mktgroupid);
+    $result = $stmt->execute();
+    
+    while ($res = $result->fetchArray(SQLITE3_NUM)) {
+        $typenames[$i] = $res[0];
+        $i++;
+    }
+    
+    return($typenames);
+}
+
+function getTypeNamesbyMktGroupIDregex($mktgroupid, $regexp) {
+    $i = 0;
+    $types = [];
+    $typenames = getTypeNameSbyMktGroupID($mktgroupid);
+    
+    foreach ($typenames as $name) {
+        if (preg_match($regexp, $name)) {
+            $types[$i] = $name;
+            $i++;
+        }
+    }
+    
+    dump_shit($types);
+    return($types);
+}
+
 
 function displayShipItems($items) {
     
@@ -184,7 +219,7 @@ function auditShip($scap_type, $scap_items) {
     foreach ($scap_required['items'] as $required_item) {
 
         // Initialize local vars to defaults
-        $description = $nameContains = "";
+        $description = $nameContains = $pattern = "";
         $groupID = $typeID = $minMeta = $minQty = 0;
         $storylineOK = $officerTrumpsAll = FALSE;
         $pass = FALSE;
@@ -243,31 +278,54 @@ function auditShip($scap_type, $scap_items) {
 
                 if (array_key_exists($group_item, $scap_items)) {
                     $group_item_meta = getMetaLevelbyTypeID($group_item);
+
                     if ($group_item_meta >= $minMeta) {
+
                         if (($officerTrumpsAll) && ($group_item_meta >= 11)) {
                             $group_qty += $scap_items[$group_item];
                             continue;
                         }
+
                         if (($storylineOK) && ($group_item_meta = 6)) {
                             $group_qty += $scap_items[$group_item];
                             continue;
                         }
+
                         if ($nameContains) {
                             $pattern = "/" . $nameContains . "/";
                             $item_name = getTypeNamebyTypeID($group_item);
+dump_shit($pattern);
                             if (preg_match($pattern, $item_name)) {
                                 $group_qty += $scap_items[$group_item];
                                 continue;
                             }
                         }
-                        $group_qty += $scap_items[$group_item];
                     }
+                    $group_qty += $scap_items[$group_item];
                 }
             }
-            if (!$f) {
+
+            if ($group_qty < $minQty) {
+                
+                $failmsg = "You do not have at least " . $minQty . " of " . $description . " which need to be Meta " . $minMeta . " or better.";
+                
+                if ($storylineOK)
+                    $failmsg += " Storyline version is OK";
+                
+                if ($nameContains) {
+                    dump_shit($pattern);
+                    $item_names = getTypeNamesbyMktGroupIDregex($groupID, $pattern);
+                }
+
+                $results['fail']['groupid'][$groupID]['reason'] = $failmsg;
+                $f++;
+                continue;
+            } else {
                 $results['pass'][$p]['groupid'] = $groupID;
                 $p++;
+                continue;
             }
+            
         }
     }
 
@@ -279,9 +337,6 @@ try {
     $response = $pheal->AssetList(array("characterID" => $characterID));    
 
     walkAssets($response->assets);
-    //ksort($scap_items);
-    //displayShipItems($scap_items);
-
     auditShip($scap_type, $scap_items);
 
     $db->close();
