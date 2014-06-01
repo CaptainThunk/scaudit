@@ -100,15 +100,16 @@ function getGroupNamebyTypeID($typeid) {
 
     return($rv[0]);}
 
-function getMetaLevelbyGroupID($groupid) {
+function getMetaLevelbyTypeID($typeid) {
     global $db;
 
-    $sql = "select typeID, typeName, (select coalesce(valueInt,valueFloat) value from dgmTypeAttributes where attributeID=633 and invTypes.typeID = typeID) as MetaLevel from invTypes where groupID = :groupid order by MetaLevel";
+    $sql = "select coalesce(valueInt,valueFloat) value from dgmTypeAttributes where attributeID=633 and typeID = :typeid";
     $query = $db->prepare($sql);
-    $query->bindValue(':groupid', $groupid);
+    $query->bindValue(':typeid', $typeid);
     $result = $query->execute();
     $rv = $result->fetchArray();
     
+    return($rv[0]);
 }
 
 function getTypeIDSbyMktGroupID($mktgroupid){
@@ -180,7 +181,7 @@ function auditShip($scap_type, $scap_items) {
 
     $scap_required = open_json($scap_type);
 
-    foreach ($scap_required['items'] as $item) {
+    foreach ($scap_required['items'] as $required_item) {
 
         // Initialize local vars to defaults
         $description = $nameContains = "";
@@ -189,28 +190,28 @@ function auditShip($scap_type, $scap_items) {
         $pass = FALSE;
 
         // Should always be defined
-        $description = $item['description'];
-        $minQty = $item['minQty'];
+        $description = $required_item['description'];
+        $minQty = $required_item['minQty'];
 
         // groupID OR typeID should always be defined
-        if (array_key_exists('groupID', $item))
-            $groupID = $item['groupID'];
+        if (array_key_exists('groupID', $required_item))
+            $groupID = $required_item['groupID'];
 
-        if (array_key_exists('typeID', $item))
-            $typeID = $item['typeID'];
+        if (array_key_exists('typeID', $required_item))
+            $typeID = $required_item['typeID'];
 
         // Optional parameters
-        if (array_key_exists('minMeta', $item))
-            $minMeta = $item['minMeta'];
+        if (array_key_exists('minMeta', $required_item))
+            $minMeta = $required_item['minMeta'];
 
-        if (array_key_exists('nameContains', $item))
-            $nameContains = $item['nameContains'];
+        if (array_key_exists('nameContains', $required_item))
+            $nameContains = $required_item['nameContains'];
 
-        if (array_key_exists('storylineOK', $item))
-            $storylineOK = $item['storylineOK'];
+        if (array_key_exists('storylineOK', $required_item))
+            $storylineOK = $required_item['storylineOK'];
 
-        if (array_key_exists('officerTrumpsAll', $item))
-            $officerTrumpsAll = $item['officerTrumpsAll'];    
+        if (array_key_exists('officerTrumpsAll', $required_item))
+            $officerTrumpsAll = $required_item['officerTrumpsAll'];    
 
         // Let's see how bad this super pilot is
         
@@ -235,21 +236,38 @@ function auditShip($scap_type, $scap_items) {
         
         // Items required by Group ID
         if ($groupID) {
+            $group_qty = 0;
             $group_items = getTypeIDSbyMktGroupID($groupID);
 
-            foreach ($group_items as $item) {
-                if ($f)
-                    break;
+            foreach ($group_items as $group_item) {
 
-                if (!array_key_exists($item, $scap_items)) {
-                    $item_name = getTypeNamebyTypeID($item);
-                    $results['fail']['groupid'][$groupID]['reason'] = "Not present. You need to have $minQty of $item_name";
-                    $f++;
-                    break;
+                if (array_key_exists($group_item, $scap_items)) {
+                    $group_item_meta = getMetaLevelbyTypeID($group_item);
+                    if ($group_item_meta >= $minMeta) {
+                        if (($officerTrumpsAll) && ($group_item_meta >= 11)) {
+                            $group_qty += $scap_items[$group_item];
+                            continue;
+                        }
+                        if (($storylineOK) && ($group_item_meta = 6)) {
+                            $group_qty += $scap_items[$group_item];
+                            continue;
+                        }
+                        if ($nameContains) {
+                            $pattern = "/" . $nameContains . "/";
+                            $item_name = getTypeNamebyTypeID($group_item);
+                            if (preg_match($pattern, $item_name)) {
+                                $group_qty += $scap_items[$group_item];
+                                continue;
+                            }
+                        }
+                        $group_qty += $scap_items[$group_item];
+                    }
                 }
             }
-            $results['pass'][$p]['groupid'] = $groupID;
-            $p++;
+            if (!$f) {
+                $results['pass'][$p]['groupid'] = $groupID;
+                $p++;
+            }
         }
     }
 
