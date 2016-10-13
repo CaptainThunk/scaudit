@@ -17,9 +17,9 @@ Config::getInstance()->access = new \Pheal\Access\StaticCheck();
 $pheal = new Pheal($keyID, $vCode, "char");
 $db = new SQLite3(dirname($_SERVER['SCRIPT_FILENAME']) . "/" . $static_dump);
 
-function dump_stuff($stuff) {
+function dump_shit($shit) {
     echo "<pre>";
-    print_r($stuff);
+    print_r($shit);
     echo "</pre>"; 
 }
 
